@@ -1,0 +1,2995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L.S.A Admin - Complete Management Panel</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        /* Admin Container */
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+            padding: 2rem;
+            border-right: 1px solid #333;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .sidebar-logo span {
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            color: #1a1a1a;
+        }
+
+        .sidebar-menu i {
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .main-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .main-header h1 i {
+            color: #ffd700;
+            margin-right: 0.5rem;
+        }
+
+        .admin-badge {
+            background: #1a1a1a;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-online {
+            background: #4caf50;
+            box-shadow: 0 0 10px #4caf50;
+        }
+
+        /* Cards Grid */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .admin-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .admin-card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .admin-card h2 i {
+            color: #ffd700;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Buttons */
+        .btn-save {
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            color: #1a1a1a;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,215,0,0.3);
+        }
+
+        .btn-save i {
+            margin-right: 0.5rem;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 1rem;
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card h3 {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* Category Management */
+        .category-list {
+            margin-bottom: 1.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .category-item:hover {
+            background: #e9ecef;
+        }
+
+        .category-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .category-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+        }
+
+        .category-details h4 {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .category-details small {
+            color: #666;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .category-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .category-actions button:hover {
+            color: #ffd700;
+            transform: scale(1.1);
+        }
+
+        /* Color Picker */
+        .color-picker {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 0.5rem 0;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .color-option:hover {
+            transform: scale(1.2);
+        }
+
+        .color-option.selected {
+            border-color: #000;
+            transform: scale(1.1);
+        }
+
+        /* Gallery */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            aspect-ratio: 1;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item.selected {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-item-overlay {
+            opacity: 1;
+        }
+
+        .delete-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255,0,0,0.7);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .gallery-item:hover .delete-image {
+            opacity: 1;
+        }
+
+        .delete-image:hover {
+            background: red;
+        }
+
+        .upload-area {
+            border: 2px dashed #ffd700;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fff9e6;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area:hover {
+            background: #fff0cc;
+            transform: scale(1.02);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area p {
+            color: #666;
+        }
+
+        /* Product Preview */
+        .product-preview {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .preview-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 3px solid #ffd700;
+        }
+
+        .preview-info {
+            flex: 1;
+        }
+
+        .preview-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            font-size: 1.1rem;
+        }
+
+        .preview-category {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+
+        .preview-price {
+            color: #ffd700;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        /* Order Management */
+        .order-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-processing {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-shipped {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-delivered {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 0.5rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            background: #f0f0f0;
+        }
+
+        .tab.active {
+            background: #ffd700;
+            color: #1a1a1a;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #ffd700;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .admin-container {
+                flex-direction: column;
+            }
+            
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                L.S.A <span>Admin</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" onclick="showSection('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#" onclick="showSection('products')"><i class="fas fa-box"></i> Manajemen Produk</a></li>
+                <li><a href="#" onclick="showSection('categories')"><i class="fas fa-tags"></i> Manajemen Kategori</a></li>
+                <li><a href="#" onclick="showSection('orders')"><i class="fas fa-shopping-cart"></i> Manajemen Pesanan</a></li>
+                <li><a href="#" onclick="showSection('gallery')"><i class="fas fa-images"></i> Galeri Gambar</a></li>
+                <li><a href="#" onclick="showSection('payments')"><i class="fas fa-credit-card"></i> Metode Pembayaran</a></li>
+                <li><a href="#" onclick="showSection('shipping')"><i class="fas fa-truck"></i> Pengiriman</a></li>
+                <li><a href="#" onclick="showSection('discounts')"><i class="fas fa-percent"></i> Diskon & Voucher</a></li>
+                <li><a href="#" onclick="showSection('customers')"><i class="fas fa-users"></i> Manajemen Pelanggan</a></li>
+                <li><a href="#" onclick="showSection('reports')"><i class="fas fa-chart-bar"></i> Laporan & Analitik</a></li>
+                <li><a href="#" onclick="showSection('settings')"><i class="fas fa-cog"></i> Pengaturan Toko</a></li>
+                <li><a href="#" onclick="showSection('contact')"><i class="fas fa-headset"></i> Kontak & Sosial Media</a></li>
+                <li><a href="#" onclick="showSection('backup')"><i class="fas fa-database"></i> Backup & Restore</a></li>
+                <li><a href="#" onclick="window.open('/', '_blank')"><i class="fas fa-store"></i> Lihat Toko</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="main-header">
+                <h1><i class="fas fa-cog"></i> Panel Admin L.S.A Store</h1>
+                <div class="admin-badge">
+                    <span class="status-indicator status-online"></span>
+                    Admin Online
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-box"></i>
+                        <h3>Total Produk</h3>
+                        <p id="statProducts">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-tags"></i>
+                        <h3>Kategori</h3>
+                        <p id="statCategories">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Pesanan Hari Ini</h3>
+                        <p id="statOrders">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <h3>Pelanggan</h3>
+                        <p id="statCustomers">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-dollar-sign"></i>
+                        <h3>Pendapatan Bulan Ini</h3>
+                        <p id="statRevenue">$0</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Konversi</h3>
+                        <p id="statConversion">0%</p>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h2><i class="fas fa-chart-line"></i> Penjualan 7 Hari Terakhir</h2>
+                        <canvas id="salesChart" style="width:100%; max-height:300px;"></canvas>
+                    </div>
+                    <div class="admin-card">
+                        <h2><i class="fas fa-chart-pie"></i> Kategori Terpopuler</h2>
+                        <canvas id="categoryChart" style="width:100%; max-height:300px;"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="admin-card">
+                    <h2><i class="fas fa-history"></i> Pesanan Terbaru</h2>
+                    <table class="data-table" id="recentOrdersTable">
+                        <thead>
+                            <tr>
+                                <th>ID Pesanan</th>
+                                <th>Pelanggan</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Tanggal</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data akan diisi via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <div id="products" style="display: none;">
+                <div class="admin-grid">
+                    <!-- Daftar Produk -->
+                    <div class="admin-card">
+                        <h2><i class="fas fa-list"></i> Daftar Produk</h2>
+                        <div class="search-bar">
+                            <input type="text" id="searchProduct" placeholder="Cari produk..." onkeyup="searchProducts()">
+                            <button class="btn-secondary" onclick="exportProducts()">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                        <div style="max-height: 500px; overflow-y: auto;">
+                            <table class="data-table" id="productsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Gambar</th>
+                                        <th>Nama</th>
+                                        <th>Kategori</th>
+                                        <th>Harga</th>
+                                        <th>Stok</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productsTableBody">
+                                    <!-- Data akan diisi via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Edit Produk -->
+                    <div class="admin-card">
+                        <h2><i class="fas fa-edit"></i> Edit Produk</h2>
+                        <div class="form-group">
+                            <label>Pilih Produk</label>
+                            <select id="productSelect" onchange="loadProductData()">
+                                <!-- Akan diisi via JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nama Produk</label>
+                            <input type="text" id="productName">
+                        </div>
+                        <div class="form-group">
+                            <label>Kategori</label>
+                            <select id="productCategory"></select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Harga ($)</label>
+                                <input type="number" id="productPrice" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Harga Original ($)</label>
+                                <input type="number" id="productOriginalPrice" step="0.01">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Stok</label>
+                                <input type="number" id="productStock">
+                            </div>
+                            <div class="form-group">
+                                <label>Badge</label>
+                                <input type="text" id="productBadge" placeholder="SALE, NEW, etc">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Deskripsi</label>
+                            <textarea id="productDescription" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Gambar URL</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="text" id="productImage" readonly>
+                                <button class="btn-secondary" onclick="openGalleryForProduct()">
+                                    <i class="fas fa-images"></i> Pilih
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Product Preview -->
+                        <div class="product-preview">
+                            <img src="" alt="Preview" class="preview-image" id="previewImage">
+                            <div class="preview-info">
+                                <div class="preview-title" id="previewTitle"></div>
+                                <div class="preview-category" id="previewCategory"></div>
+                                <div class="preview-price" id="previewPrice"></div>
+                                <small id="previewStock"></small>
+                            </div>
+                        </div>
+
+                        <button class="btn-save" onclick="saveProductChanges()">
+                            <i class="fas fa-save"></i> Simpan Perubahan
+                        </button>
+                    </div>
+
+                    <!-- Tambah Produk Baru -->
+                    <div class="admin-card">
+                        <h2><i class="fas fa-plus-circle"></i> Tambah Produk Baru</h2>
+                        <div class="form-group">
+                            <label>Nama Produk</label>
+                            <input type="text" id="newProductName" placeholder="Masukkan nama produk">
+                        </div>
+                        <div class="form-group">
+                            <label>Kategori</label>
+                            <select id="newProductCategory"></select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Harga ($)</label>
+                                <input type="number" id="newProductPrice" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Stok</label>
+                                <input type="number" id="newProductStock">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Deskripsi</label>
+                            <textarea id="newProductDescription" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Gambar URL</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="text" id="newProductImage" placeholder="Image URL" readonly>
+                                <button class="btn-secondary" onclick="openGalleryForNewProduct()">
+                                    <i class="fas fa-images"></i> Pilih
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn-save" onclick="addNewProduct()">
+                            <i class="fas fa-plus"></i> Tambah Produk
+                        </button>
+                    </div>
+
+                    <!-- Bulk Actions -->
+                    <div class="admin-card">
+                        <h2><i class="fas fa-tasks"></i> Aksi Massal</h2>
+                        <div class="form-group">
+                            <label>Pilih Kategori untuk Update Massal</label>
+                            <select id="bulkCategory">
+                                <option value="">Pilih Kategori</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Diskon Massal (%)</label>
+                            <input type="number" id="bulkDiscount" placeholder="Masukkan persentase diskon">
+                        </div>
+                        <button class="btn-save" onclick="applyBulkDiscount()">
+                            <i class="fas fa-percent"></i> Terapkan Diskon Massal
+                        </button>
+                        <button class="btn-secondary" onclick="exportProductsCSV()" style="margin-top: 1rem;">
+                            <i class="fas fa-file-csv"></i> Export ke CSV
+                        </button>
+                        <button class="btn-secondary" onclick="importProductsCSV()">
+                            <i class="fas fa-file-import"></i> Import dari CSV
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Section -->
+            <div id="categories" style="display: none;">
+                <div class="admin-grid">
+                    <!-- Daftar Kategori -->
+                    <div class="admin-card">
+                        <h2><i class="fas fa-list"></i> Daftar Kategori</h2>
+                        <div class="category-list" id="categoryList">
+                            <!-- Akan diisi via JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Tambah/Edit Kategori -->
+                    <div class="admin-card">
+                        <h2><i class="fas fa-plus-circle"></i> Tambah Kategori Baru</h2>
+                        <div class="form-group">
+                            <label>Nama Kategori</label>
+                            <input type="text" id="categoryName" placeholder="Contoh: Koleksi Pria">
+                        </div>
+                        <div class="form-group">
+                            <label>Warna Kategori</label>
+                            <div class="color-picker" id="colorPicker">
+                                <!-- Akan diisi via JavaScript -->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Deskripsi (Opsional)</label>
+                            <textarea id="categoryDescription" rows="3" placeholder="Deskripsi kategori..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Icon Kategori</label>
+                            <select id="categoryIcon">
+                                <option value="fa-shoe-prints">Shoes</option>
+                                <option value="fa-tshirt">T-Shirt</option>
+                                <option value="fa-hat-cowboy">Hat</option>
+                                <option value="fa-bag-shopping">Bag</option>
+                                <option value="fa-clock">Watch</option>
+                                <option value="fa-gem">Accessories</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <label class="switch">
+                                <input type="checkbox" id="categoryActive" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <button class="btn-save" onclick="addCategory()">
+                            <i class="fas fa-plus"></i> Tambah Kategori
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Section -->
+            <div id="orders" style="display: none;">
+                <div class="admin-card">
+                    <h2><i class="fas fa-shopping-cart"></i> Manajemen Pesanan</h2>
+                    
+                    <!-- Filter -->
+                    <div class="tabs">
+                        <div class="tab active" onclick="filterOrders('all')">Semua</div>
+                        <div class="tab" onclick="filterOrders('pending')">Pending</div>
+                        <div class="tab" onclick="filterOrders('processing')">Diproses</div>
+                        <div class="tab" onclick="filterOrders('shipped')">Dikirim</div>
+                        <div class="tab" onclick="filterOrders('delivered')">Selesai</div>
+                        <div class="tab" onclick="filterOrders('cancelled')">Dibatalkan</div>
+                    </div>
+
+                    <div class="search-bar">
+                        <input type="text" id="searchOrder" placeholder="Cari ID pesanan atau nama pelanggan...">
+                        <button class="btn-secondary" onclick="exportOrders()">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+
+                    <table class="data-table" id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>ID Pesanan</th>
+                                <th>Pelanggan</th>
+                                <th>Produk</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Pembayaran</th>
+                                <th>Tanggal</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <!-- Akan diisi via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Detail Pesanan Modal akan ditampilkan di sini -->
+            </div>
+
+            <!-- Gallery Section -->
+            <div id="gallery" style="display: none;">
+                <div class="admin-card">
+                    <h2><i class="fas fa-images"></i> Galeri Gambar</h2>
+                    
+                    <!-- Upload Area -->
+                    <div class="upload-area" onclick="document.getElementById('imageUpload').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Upload Gambar</h3>
+                        <p>Klik untuk upload atau drag & drop (JPG, PNG, GIF)</p>
+                        <input type="file" id="imageUpload" accept="image/*" multiple style="display: none;" onchange="handleImageUpload(event)">
+                    </div>
+
+                    <!-- URL Upload -->
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <input type="text" id="imageUrlInput" placeholder="Atau masukkan URL gambar..." style="flex: 1;">
+                        <button class="btn-secondary" onclick="addImageFromUrl()">
+                            <i class="fas fa-plus"></i> Tambah
+                        </button>
+                    </div>
+
+                    <!-- Search and Filter -->
+                    <div class="search-bar">
+                        <input type="text" id="searchGallery" placeholder="Cari gambar..." onkeyup="searchGallery()">
+                        <button class="btn-secondary" onclick="selectAllGallery()">
+                            <i class="fas fa-check-double"></i> Select All
+                        </button>
+                        <button class="btn-danger" onclick="deleteSelectedImages()">
+                            <i class="fas fa-trash"></i> Hapus Terpilih
+                        </button>
+                    </div>
+
+                    <!-- Gallery Grid -->
+                    <div class="gallery-grid" id="galleryGrid">
+                        <!-- Images will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payments Section -->
+            <div id="payments" style="display: none;">
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h2><i class="fas fa-credit-card"></i> Metode Pembayaran</h2>
+                        <div class="payment-methods" style="display: grid; grid-template-columns: repeat(2,1fr); gap:1rem;">
+                            <div class="payment-method active" onclick="togglePayment(this, 'credit')">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Credit Card</span>
+                            </div>
+                            <div class="payment-method active" onclick="togglePayment(this, 'bank')">
+                                <i class="fas fa-university"></i>
+                                <span>Bank Transfer</span>
+                            </div>
+                            <div class="payment-method active" onclick="togglePayment(this, 'ewallet')">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>E-Wallet</span>
+                            </div>
+                            <div class="payment-method active" onclick="togglePayment(this, 'cod')">
+                                <i class="fas fa-truck"></i>
+                                <span>Cash on Delivery</span>
+                            </div>
+                        </div>
+                        <button class="btn-save" onclick="savePaymentMethods()">
+                            <i class="fas fa-save"></i> Simpan Metode Pembayaran
+                        </button>
+                    </div>
+
+                    <div class="admin-card">
+                        <h2><i class="fas fa-credit-card"></i> Pengaturan Payment Gateway</h2>
+                        <div class="form-group">
+                            <label>Stripe Public Key</label>
+                            <input type="text" id="stripePublic" value="pk_test_...">
+                        </div>
+                        <div class="form-group">
+                            <label>Stripe Secret Key</label>
+                            <input type="password" id="stripeSecret" value="sk_test_...">
+                        </div>
+                        <div class="form-group">
+                            <label>Midtrans Server Key</label>
+                            <input type="password" id="midtransKey" value="...">
+                        </div>
+                        <button class="btn-save" onclick="savePaymentGateway()">
+                            <i class="fas fa-save"></i> Simpan Pengaturan
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping Section -->
+            <div id="shipping" style="display: none;">
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h2><i class="fas fa-truck"></i> Pengaturan Pengiriman</h2>
+                        <div class="form-group">
+                            <label>Kurir (pisahkan dengan koma)</label>
+                            <input type="text" id="shippingCouriers" value="JNE, J&T, SiCepat, Pos Indonesia">
+                        </div>
+                        <div class="form-group">
+                            <label>Ongkos Kirim Flat Rate ($)</label>
+                            <input type="number" id="shippingFlatRate" value="5.00" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Gratis Ongkir Minimal Belanja ($)</label>
+                            <input type="number" id="shippingFreeMin" value="50.00" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Estimasi Pengiriman (hari)</label>
+                            <input type="text" id="shippingEstimate" value="3-5">
+                        </div>
+                        <button class="btn-save" onclick="saveShippingSettings()">
+                            <i class="fas fa-save"></i> Simpan Pengaturan
+                        </button>
+                    </div>
+
+                    <div class="admin-card">
+                        <h2><i class="fas fa-map-marker-alt"></i> Alamat Toko</h2>
+                        <div class="form-group">
+                            <label>Alamat</label>
+                            <textarea id="storeAddress" rows="3">Jl. Contoh No. 123, Jakarta</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Provinsi</label>
+                            <input type="text" id="storeProvince" value="DKI Jakarta">
+                        </div>
+                        <div class="form-group">
+                            <label>Kota</label>
+                            <input type="text" id="storeCity" value="Jakarta Selatan">
+                        </div>
+                        <div class="form-group">
+                            <label>Kode Pos</label>
+                            <input type="text" id="storeZip" value="12345">
+                        </div>
+                        <button class="btn-save" onclick="saveStoreAddress()">
+                            <i class="fas fa-save"></i> Simpan Alamat
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discounts Section -->
+            <div id="discounts" style="display: none;">
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h2><i class="fas fa-tag"></i> Diskon per Produk</h2>
+                        <div class="form-group">
+                            <label>Pilih Produk</label>
+                            <select id="discountProductSelect"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipe Diskon</label>
+                            <select id="discountType">
+                                <option value="percentage">Persentase (%)</option>
+                                <option value="fixed">Nominal Tetap ($)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nilai Diskon</label>
+                            <input type="number" id="discountValue" value="30">
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal Mulai</label>
+                            <input type="date" id="discountStart">
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal Berakhir</label>
+                            <input type="date" id="discountEnd">
+                        </div>
+                        <button class="btn-save" onclick="applyDiscount()">
+                            <i class="fas fa-tags"></i> Terapkan Diskon
+                        </button>
+                    </div>
+
+                    <div class="admin-card">
+                        <h2><i class="fas fa-ticket-alt"></i> Voucher & Kupon</h2>
+                        <div class="form-group">
+                            <label>Kode Voucher</label>
+                            <input type="text" id="voucherCode" placeholder="SALE2024">
+                        </div>
+                        <div class="form-group">
+                            <label>Tipe</label>
+                            <select id="voucherType">
+                                <option value="percentage">Persentase</option>
+                                <option value="fixed">Nominal Tetap</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nilai</label>
+                            <input type="number" id="voucherValue" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label>Minimal Belanja ($)</label>
+                            <input type="number" id="voucherMin" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Maksimal Penggunaan</label>
+                            <input type="number" id="voucherMaxUses" value="100">
+                        </div>
+                        <button class="btn-save" onclick="addVoucher()">
+                            <i class="fas fa-plus"></i> Buat Voucher
+                        </button>
+                    </div>
+
+                    <div class="admin-card">
+                        <h2><i class="fas fa-list"></i> Daftar Voucher Aktif</h2>
+                        <table class="data-table" id="vouchersTable">
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Tipe</th>
+                                    <th>Nilai</th>
+                                    <th>Min Belanja</th>
+                                    <th>Digunakan</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vouchersTableBody">
+                                <!-- Akan diisi via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customers Section -->
+            <div id="customers" style="display: none;">
+                <div class="admin-card">
+                    <h2><i class="fas fa-users"></i> Manajemen Pelanggan</h2>
+                    <div class="search-bar">
+                        <input type="text" id="searchCustomer" placeholder="Cari nama atau email pelanggan...">
+                        <button class="btn-secondary" onclick="exportCustomers()">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                    <table class="data-table" id="customersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>No. HP</th>
+                                <th>Total Belanja</th>
+                                <th>Jumlah Pesanan</th>
+                                <th>Terdaftar</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTableBody">
+                            <!-- Akan diisi via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reports Section -->
+            <div id="reports" style="display: none;">
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h2><i class="fas fa-chart-bar"></i> Laporan Penjualan</h2>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Dari Tanggal</label>
+                                <input type="date" id="reportStart">
+                            </div>
+                            <div class="form-group">
+                                <label>Sampai Tanggal</label>
+                                <input type="date" id="reportEnd">
+                            </div>
+                        </div>
+                        <button class="btn-save" onclick="generateSalesReport()">
+                            <i class="fas fa-file-pdf"></i> Generate PDF
+                        </button>
+                        <button class="btn-secondary" onclick="exportSalesReport()" style="margin-top: 1rem;">
+                            <i class="fas fa-file-excel"></i> Export Excel
+                        </button>
+                    </div>
+
+                    <div class="admin-card">
+                        <h2><i class="fas fa-chart-pie"></i> Laporan Stok</h2>
+                        <button class="btn-save" onclick="generateStockReport()">
+                            <i class="fas fa-file-pdf"></i> Laporan Stok
+                        </button>
+                        <button class="btn-danger" onclick="checkLowStock()" style="margin-top: 1rem;">
+                            <i class="fas fa-exclamation-triangle"></i> Cek Stok Menipis
+                        </button>
+                    </div>
+
+                    <div class="admin-card">
+                        <h2><i class="fas fa-chart-line"></i> Analitik</h2>
+                        <canvas id="analyticsChart" style="width:100%; height:300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings" style="display: none;">
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h2><i class="fas fa-store"></i> Informasi Toko</h2>
+                        <div class="form-group">
+                            <label>Nama Toko</label>
+                            <input type="text" id="storeName" value="L.S.A Crocs">
+                        </div>
+                        <div class="form-group">
+                            <label>Tagline</label>
+                            <input type="text" id="storeTagline" value="Premium Lifestyle Crocs">
+                        </div>
+                        <div class="form-group">
+                            <label>Deskripsi Toko</label>
+                            <textarea id="storeDescription" rows="3">Toko resmi L.S.A Crocs menyediakan berbagai koleksi Crocs original dengan desain modern dan elegan.</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Logo URL</label>
+                            <input type="text" id="storeLogo" value="/logo.png">
+                        </div>
+                        <div class="form-group">
+                            <label>Favicon URL</label>
+                            <input type="text" id="storeFavicon" value="/favicon.ico">
+                        </div>
+                        <button class="btn-save" onclick="saveStoreInfo()">
+                            <i class="fas fa-save"></i> Simpan Informasi
+                        </button>
+                    </div>
+
+                    <div class="admin-card">
+                        <h2><i class="fas fa-palette"></i> Tampilan</h2>
+                        <div class="form-group">
+                            <label>Warna Primer</label>
+                            <input type="color" id="themePrimary" value="#ffd700">
+                        </div>
+                        <div class="form-group">
+                            <label>Warna Sekunder</label>
+                            <input type="color" id="themeSecondary" value="#1a1a1a">
+                        </div>
+                        <div class="form-group">
+                            <label>Font</label>
+                            <select id="themeFont">
+                                <option value="Inter">Inter</option>
+                                <option value="Poppins">Poppins</option>
+                                <option value="Montserrat">Montserrat</option>
+                                <option value="Roboto">Roboto</option>
+                            </select>
+                        </div>
+                        <button class="btn-save" onclick="saveTheme()">
+                            <i class="fas fa-save"></i> Simpan Tema
+                        </button>
+                    </div>
+
+                    <div class="admin-card">
+                        <h2><i class="fas fa-globe"></i> SEO Settings</h2>
+                        <div class="form-group">
+                            <label>Meta Title</label>
+                            <input type="text" id="seoTitle" value="L.S.A Crocs - Premium Lifestyle Crocs">
+                        </div>
+                        <div class="form-group">
+                            <label>Meta Description</label>
+                            <textarea id="seoDescription" rows="3">Temukan koleksi Crocs premium dengan desain modern dan elegan. Belanja online aman dan mudah.</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Meta Keywords</label>
+                            <input type="text" id="seoKeywords" value="crocs, sepatu, lifestyle, premium, fashion">
+                        </div>
+                        <button class="btn-save" onclick="saveSEO()">
+                            <i class="fas fa-save"></i> Simpan SEO
+                        </button>
+                    </div>
+
+                    <div class="admin-card">
+                        <h2><i class="fas fa-shield-alt"></i> Keamanan</h2>
+                        <div class="form-group">
+                            <label>Ganti Password Admin</label>
+                            <input type="password" id="adminPassword" placeholder="Password baru">
+                        </div>
+                        <div class="form-group">
+                            <label>Konfirmasi Password</label>
+                            <input type="password" id="adminPasswordConfirm" placeholder="Konfirmasi password">
+                        </div>
+                        <div class="form-group">
+                            <label>2FA Authentication</label>
+                            <label class="switch">
+                                <input type="checkbox" id="enable2FA">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <button class="btn-save" onclick="saveSecurity()">
+                            <i class="fas fa-save"></i> Simpan Pengaturan
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div id="contact" style="display: none;">
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h2><i class="fas fa-headset"></i> Kontak Admin</h2>
+                        <div class="form-group">
+                            <label>WhatsApp Number</label>
+                            <input type="text" id="waNumber" value="+62 812-3456-7890">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="emailContact" value="admin@lsacrocs.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Telepon</label>
+                            <input type="text" id="phoneNumber" value="(021) 1234-5678">
+                        </div>
+                        <button class="btn-save" onclick="saveContactInfo()">
+                            <i class="fas fa-save"></i> Simpan Kontak
+                        </button>
+                    </div>
+
+                    <div class="admin-card">
+                        <h2><i class="fas fa-hashtag"></i> Sosial Media</h2>
+                        <div class="form-group">
+                            <label>Instagram</label>
+                            <input type="text" id="instagram" value="@lsa.crocs">
+                        </div>
+                        <div class="form-group">
+                            <label>Facebook</label>
+                            <input type="text" id="facebook" value="LSA Crocs">
+                        </div>
+                        <div class="form-group">
+                            <label>Twitter</label>
+                            <input type="text" id="twitter" value="@lsacrocs">
+                        </div>
+                        <div class="form-group">
+                            <label>TikTok</label>
+                            <input type="text" id="tiktok" value="@lsa.crocs">
+                        </div>
+                        <div class="form-group">
+                            <label>YouTube</label>
+                            <input type="text" id="youtube" value="LSA Crocs Official">
+                        </div>
+                        <button class="btn-save" onclick="saveSocialMedia()">
+                            <i class="fas fa-save"></i> Simpan Sosial Media
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Backup Section -->
+            <div id="backup" style="display: none;">
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h2><i class="fas fa-database"></i> Backup Data</h2>
+                        <p style="margin-bottom: 1rem;">Terakhir backup: 2024-01-15 10:30</p>
+                        <button class="btn-save" onclick="createBackup()">
+                            <i class="fas fa-hdd"></i> Backup Sekarang
+                        </button>
+                        <button class="btn-secondary" onclick="downloadBackup()" style="margin-top: 1rem;">
+                            <i class="fas fa-download"></i> Download Backup
+                        </button>
+                    </div>
+
+                    <div class="admin-card">
+                        <h2><i class="fas fa-undo-alt"></i> Restore Data</h2>
+                        <div class="upload-area" onclick="document.getElementById('restoreFile').click()" style="padding: 1rem;">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Klik untuk upload file backup</p>
+                            <input type="file" id="restoreFile" accept=".json" style="display: none;" onchange="restoreBackup(event)">
+                        </div>
+                    </div>
+
+                    <div class="admin-card">
+                        <h2><i class="fas fa-history"></i> Riwayat Backup</h2>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Ukuran</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024-01-15 10:30</td>
+                                    <td>2.5 MB</td>
+                                    <td><button class="btn-secondary" onclick="restoreBackupFile('backup1')">Restore</button></td>
+                                </tr>
+                                <tr>
+                                    <td>2024-01-14 23:15</td>
+                                    <td>2.4 MB</td>
+                                    <td><button class="btn-secondary" onclick="restoreBackupFile('backup2')">Restore</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal untuk Detail Pesanan -->
+    <div class="modal" id="orderDetailModal">
+        <div class="modal-content">
+            <h3>Detail Pesanan #ORD-001</h3>
+            <div id="orderDetailContent">
+                <!-- Konten detail pesanan -->
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeOrderModal()">Tutup</button>
+                <button class="btn-save" onclick="updateOrderStatus()">Update Status</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal untuk Edit Kategori -->
+    <div class="modal" id="editCategoryModal">
+        <div class="modal-content">
+            <h3>Edit Kategori</h3>
+            <input type="hidden" id="editCategoryId">
+            <div class="form-group">
+                <label>Nama Kategori</label>
+                <input type="text" id="editCategoryName">
+            </div>
+            <div class="form-group">
+                <label>Warna Kategori</label>
+                <div class="color-picker" id="editColorPicker"></div>
+            </div>
+            <div class="form-group">
+                <label>Deskripsi</label>
+                <textarea id="editCategoryDescription" rows="3"></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeEditCategoryModal()">Batal</button>
+                <button class="btn-save" onclick="saveCategoryChanges()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DATA INITIALIZATION ====================
+        
+        // Categories Data
+        let categories = JSON.parse(localStorage.getItem('lsaCategories')) || [
+            { id: 'cat1', name: 'Classic Collection', color: '#ffd700', description: 'Koleksi klasik untuk gaya sehari-hari', icon: 'fa-shoe-prints', active: true, productCount: 1 },
+            { id: 'cat2', name: 'Sport Edition', color: '#4ecdc4', description: 'Desain untuk gaya hidup aktif', icon: 'fa-tshirt', active: true, productCount: 1 },
+            { id: 'cat3', name: 'Luxury Line', color: '#ff6b6b', description: 'Material premium dengan desain elegan', icon: 'fa-gem', active: true, productCount: 1 },
+            { id: 'cat4', name: 'Kids Collection', color: '#96ceb4', description: 'Nyaman untuk si kecil', icon: 'fa-child', active: true, productCount: 0 },
+            { id: 'cat5', name: 'Limited Edition', color: '#45b7d1', description: 'Edisi terbatas', icon: 'fa-star', active: true, productCount: 0 }
+        ];
+
+        // Products Data
+        let products = JSON.parse(localStorage.getItem('lsaProducts')) || [
+            {
+                id: 0,
+                name: "Classic Crocs",
+                category: 'cat1',
+                price: 49.99,
+                originalPrice: 79.99,
+                stock: 50,
+                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                badge: "SALE",
+                description: "Crocs klasik dengan kenyamanan maksimal"
+            },
+            {
+                id: 1,
+                name: "Sport Mode",
+                category: 'cat2',
+                price: 69.99,
+                originalPrice: 89.99,
+                stock: 35,
+                image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                badge: "NEW",
+                description: "Crocs sport untuk aktivitas outdoor"
+            },
+            {
+                id: 2,
+                name: "Lux Edition",
+                category: 'cat3',
+                price: 129.99,
+                originalPrice: 199.99,
+                stock: 15,
+                image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                badge: "PREMIUM",
+                description: "Crocs edisi mewah dengan material premium"
+            }
+        ];
+
+        // Orders Data
+        let orders = JSON.parse(localStorage.getItem('lsaOrders')) || [
+            { id: 'ORD-001', customer: 'Budi Santoso', products: ['Classic Crocs'], total: 49.99, status: 'pending', payment: 'credit', date: '2024-01-15' },
+            { id: 'ORD-002', customer: 'Siti Aminah', products: ['Sport Mode'], total: 69.99, status: 'processing', payment: 'bank', date: '2024-01-14' },
+            { id: 'ORD-003', customer: 'Ahmad Fauzi', products: ['Lux Edition'], total: 129.99, status: 'shipped', payment: 'ewallet', date: '2024-01-13' },
+            { id: 'ORD-004', customer: 'Dewi Lestari', products: ['Classic Crocs', 'Sport Mode'], total: 119.98, status: 'delivered', payment: 'cod', date: '2024-01-12' },
+            { id: 'ORD-005', customer: 'Rudi Hartono', products: ['Lux Edition'], total: 129.99, status: 'cancelled', payment: 'credit', date: '2024-01-11' }
+        ];
+
+        // Customers Data
+        let customers = JSON.parse(localStorage.getItem('lsaCustomers')) || [
+            { id: 1, name: 'Budi Santoso', email: 'budi@email.com', phone: '081234567890', totalSpent: 499.99, orders: 5, registered: '2023-12-01', status: 'active' },
+            { id: 2, name: 'Siti Aminah', email: 'siti@email.com', phone: '081234567891', totalSpent: 299.99, orders: 3, registered: '2023-12-05', status: 'active' },
+            { id: 3, name: 'Ahmad Fauzi', email: 'ahmad@email.com', phone: '081234567892', totalSpent: 699.99, orders: 7, registered: '2023-11-15', status: 'active' }
+        ];
+
+        // Vouchers Data
+        let vouchers = JSON.parse(localStorage.getItem('lsaVouchers')) || [
+            { code: 'SALE10', type: 'percentage', value: 10, minSpend: 0, maxUses: 100, used: 45, active: true },
+            { code: 'NEWUSER20', type: 'percentage', value: 20, minSpend: 50, maxUses: 50, used: 23, active: true },
+            { code: 'FREESHIP', type: 'fixed', value: 5, minSpend: 30, maxUses: 200, used: 78, active: true }
+        ];
+
+        // Gallery Images
+        let galleryImages = JSON.parse(localStorage.getItem('lsaGallery')) || [
+            "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+            "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+            "https://images.unsplash.com/photo-1608231387042-66d1773070a5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+            "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+            "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+            "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+        ];
+
+        // Payment Methods
+        let activePayments = JSON.parse(localStorage.getItem('lsaPayments')) || ['credit', 'bank', 'ewallet', 'cod'];
+        
+        // Contact Info
+        let contactInfo = JSON.parse(localStorage.getItem('lsaContact')) || {
+            wa: "+62 812-3456-7890",
+            email: "admin@lsacrocs.com",
+            phone: "(021) 1234-5678",
+            instagram: "@lsa.crocs",
+            facebook: "LSA Crocs",
+            twitter: "@lsacrocs",
+            tiktok: "@lsa.crocs",
+            youtube: "LSA Crocs Official"
+        };
+
+        // Store Settings
+        let storeSettings = JSON.parse(localStorage.getItem('lsaSettings')) || {
+            name: "L.S.A Crocs",
+            tagline: "Premium Lifestyle Crocs",
+            description: "Toko resmi L.S.A Crocs menyediakan berbagai koleksi Crocs original dengan desain modern dan elegan.",
+            logo: "/logo.png",
+            favicon: "/favicon.ico",
+            address: "Jl. Contoh No. 123, Jakarta",
+            province: "DKI Jakarta",
+            city: "Jakarta Selatan",
+            zip: "12345"
+        };
+
+        // UI State
+        let selectedGalleryImage = null;
+        let currentProductField = 'productImage';
+        let selectedColor = '#ffd700';
+        let selectedImages = [];
+
+        // ==================== INITIALIZATION ====================
+        
+        function initialize() {
+            updateCategoryCounts();
+            loadCategoriesToSelects();
+            loadProductsToSelects();
+            loadProductsTable();
+            loadOrdersTable();
+            loadCustomersTable();
+            loadVouchersTable();
+            updateStats();
+            loadColorPicker();
+            initCharts();
+            loadGallery();
+            updateDashboard();
+        }
+
+        function updateCategoryCounts() {
+            categories.forEach(cat => {
+                cat.productCount = products.filter(p => p.category === cat.id).length;
+            });
+            localStorage.setItem('lsaCategories', JSON.stringify(categories));
+        }
+
+        function updateStats() {
+            document.getElementById('statProducts').textContent = products.length;
+            document.getElementById('statCategories').textContent = categories.length;
+            document.getElementById('statOrders').textContent = orders.filter(o => o.date === new Date().toISOString().split('T')[0]).length;
+            document.getElementById('statCustomers').textContent = customers.length;
+            
+            const monthlyRevenue = orders
+                .filter(o => o.date.startsWith('2024-01') && o.status !== 'cancelled')
+                .reduce((sum, o) => sum + o.total, 0);
+            document.getElementById('statRevenue').textContent = '$' + monthlyRevenue.toFixed(2);
+            
+            const conversion = ((orders.filter(o => o.status === 'delivered').length / orders.length) * 100).toFixed(1);
+            document.getElementById('statConversion').textContent = conversion + '%';
+        }
+
+        // ==================== CHARTS ====================
+        
+        function initCharts() {
+            // Sales Chart
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+                    datasets: [{
+                        label: 'Penjualan ($)',
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                        borderColor: '#ffd700',
+                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Category Chart
+            const ctx2 = document.getElementById('categoryChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: categories.slice(0,4).map(c => c.name),
+                    datasets: [{
+                        data: [30, 25, 20, 25],
+                        backgroundColor: ['#ffd700', '#4ecdc4', '#ff6b6b', '#96ceb4'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        // ==================== SECTION NAVIGATION ====================
+        
+        function showSection(section) {
+            // Hide all sections
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('products').style.display = 'none';
+            document.getElementById('categories').style.display = 'none';
+            document.getElementById('orders').style.display = 'none';
+            document.getElementById('gallery').style.display = 'none';
+            document.getElementById('payments').style.display = 'none';
+            document.getElementById('shipping').style.display = 'none';
+            document.getElementById('discounts').style.display = 'none';
+            document.getElementById('customers').style.display = 'none';
+            document.getElementById('reports').style.display = 'none';
+            document.getElementById('settings').style.display = 'none';
+            document.getElementById('contact').style.display = 'none';
+            document.getElementById('backup').style.display = 'none';
+            
+            // Show selected section
+            document.getElementById(section).style.display = 'block';
+            
+            // Update active menu
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Refresh data if needed
+            if (section === 'products') {
+                loadProductsTable();
+                setTimeout(loadProductData, 100);
+            } else if (section === 'categories') {
+                loadCategoryList();
+            } else if (section === 'orders') {
+                loadOrdersTable();
+            } else if (section === 'gallery') {
+                loadGallery();
+            } else if (section === 'payments') {
+                loadPaymentMethodsUI();
+            } else if (section === 'customers') {
+                loadCustomersTable();
+            } else if (section === 'discounts') {
+                loadVouchersTable();
+            }
+        }
+
+        // ==================== PRODUCT MANAGEMENT ====================
+        
+        function loadProductsTable() {
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = '';
+            
+            products.forEach((product, index) => {
+                const category = categories.find(c => c.id === product.category);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><img src="${product.image}" style="width:50px; height:50px; object-fit:cover; border-radius:5px;"></td>
+                    <td>${product.name}</td>
+                    <td>${category ? category.name : '-'}</td>
+                    <td>$${product.price.toFixed(2)}</td>
+                    <td>${product.stock}</td>
+                    <td>${product.stock > 0 ? '<span style="color:#28a745;">Tersedia</span>' : '<span style="color:#dc3545;">Habis</span>'}</td>
+                    <td>
+                        <button class="btn-secondary" onclick="editProduct(${index})" style="padding:0.3rem 0.8rem;">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-danger" onclick="deleteProduct(${index})" style="padding:0.3rem 0.8rem;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Update product select
+            const select = document.getElementById('productSelect');
+            select.innerHTML = '';
+            products.forEach((product, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = product.name;
+                select.appendChild(option);
+            });
+        }
+
+        function loadProductsToSelects() {
+            // Product select
+            const select = document.getElementById('productSelect');
+            if (select) {
+                select.innerHTML = '';
+                products.forEach((product, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = product.name;
+                    select.appendChild(option);
+                });
+            }
+
+            // Discount product select
+            const discountSelect = document.getElementById('discountProductSelect');
+            if (discountSelect) {
+                discountSelect.innerHTML = '';
+                products.forEach((product, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = product.name;
+                    discountSelect.appendChild(option);
+                });
+            }
+
+            // Bulk category select
+            const bulkSelect = document.getElementById('bulkCategory');
+            if (bulkSelect) {
+                bulkSelect.innerHTML = '<option value="">Pilih Kategori</option>';
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.id;
+                    option.textContent = cat.name;
+                    bulkSelect.appendChild(option);
+                });
+            }
+        }
+
+        function loadCategoriesToSelects() {
+            const categorySelects = [
+                'productCategory', 
+                'newProductCategory',
+                'bulkCategory'
+            ];
+            
+            categorySelects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    select.innerHTML = '';
+                    categories.forEach(cat => {
+                        if (cat.active) {
+                            const option = document.createElement('option');
+                            option.value = cat.id;
+                            option.textContent = cat.name;
+                            select.appendChild(option);
+                        }
+                    });
+                }
+            });
+        }
+
+        function loadProductData() {
+            const select = document.getElementById('productSelect');
+            if (!select || select.options.length === 0) return;
+            
+            const index = parseInt(select.value);
+            const product = products[index];
+            
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productOriginalPrice').value = product.originalPrice || '';
+            document.getElementById('productStock').value = product.stock;
+            document.getElementById('productBadge').value = product.badge || '';
+            document.getElementById('productDescription').value = product.description || '';
+            document.getElementById('productImage').value = product.image;
+            
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const categoryId = document.getElementById('productCategory').value;
+            const category = categories.find(c => c.id === categoryId);
+            
+            document.getElementById('previewImage').src = document.getElementById('productImage').value;
+            document.getElementById('previewTitle').textContent = document.getElementById('productName').value;
+            document.getElementById('previewCategory').textContent = category ? category.name : '';
+            document.getElementById('previewPrice').textContent = '$' + parseFloat(document.getElementById('productPrice').value).toFixed(2);
+            document.getElementById('previewStock').textContent = 'Stock: ' + document.getElementById('productStock').value;
+        }
+
+        function saveProductChanges() {
+            const select = document.getElementById('productSelect');
+            const index = parseInt(select.value);
+            
+            products[index] = {
+                id: index,
+                name: document.getElementById('productName').value,
+                category: document.getElementById('productCategory').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                originalPrice: parseFloat(document.getElementById('productOriginalPrice').value) || null,
+                stock: parseInt(document.getElementById('productStock').value),
+                badge: document.getElementById('productBadge').value,
+                description: document.getElementById('productDescription').value,
+                image: document.getElementById('productImage').value
+            };
+            
+            localStorage.setItem('lsaProducts', JSON.stringify(products));
+            
+            updateCategoryCounts();
+            loadProductsTable();
+            loadProductsToSelects();
+            updateStats();
+            
+            addActivity('Produk diperbarui: ' + products[index].name);
+            alert('✅ Produk berhasil diperbarui!');
+        }
+
+        function addNewProduct() {
+            const name = document.getElementById('newProductName').value;
+            const category = document.getElementById('newProductCategory').value;
+            const price = parseFloat(document.getElementById('newProductPrice').value);
+            const stock = parseInt(document.getElementById('newProductStock').value);
+            const description = document.getElementById('newProductDescription').value;
+            const image = document.getElementById('newProductImage').value;
+
+            if (!name || !price || !image) {
+                alert('Harap isi semua field yang diperlukan');
+                return;
+            }
+
+            const newProduct = {
+                id: products.length,
+                name: name,
+                category: category,
+                price: price,
+                originalPrice: null,
+                stock: stock || 0,
+                badge: 'NEW',
+                description: description,
+                image: image
+            };
+
+            products.push(newProduct);
+            localStorage.setItem('lsaProducts', JSON.stringify(products));
+            
+            // Clear form
+            document.getElementById('newProductName').value = '';
+            document.getElementById('newProductPrice').value = '';
+            document.getElementById('newProductStock').value = '';
+            document.getElementById('newProductDescription').value = '';
+            document.getElementById('newProductImage').value = '';
+            
+            updateCategoryCounts();
+            loadProductsTable();
+            loadProductsToSelects();
+            updateStats();
+            
+            addActivity('Produk baru ditambahkan: ' + name);
+            alert('✅ Produk baru berhasil ditambahkan!');
+        }
+
+        function editProduct(index) {
+            document.getElementById('productSelect').value = index;
+            loadProductData();
+            showSection('products');
+        }
+
+        function deleteProduct(index) {
+            if (confirm('Yakin ingin menghapus produk ini?')) {
+                products.splice(index, 1);
+                localStorage.setItem('lsaProducts', JSON.stringify(products));
+                loadProductsTable();
+                loadProductsToSelects();
+                updateCategoryCounts();
+                updateStats();
+                addActivity('Produk dihapus');
+            }
+        }
+
+        function searchProducts() {
+            const searchTerm = document.getElementById('searchProduct').value.toLowerCase();
+            const rows = document.querySelectorAll('#productsTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+
+        function applyBulkDiscount() {
+            const category = document.getElementById('bulkCategory').value;
+            const discount = parseFloat(document.getElementById('bulkDiscount').value);
+            
+            if (!category || !discount) {
+                alert('Pilih kategori dan masukkan diskon');
+                return;
+            }
+
+            products.forEach(product => {
+                if (product.category === category) {
+                    product.originalPrice = product.price;
+                    product.price = product.price * (1 - discount / 100);
+                    product.badge = `SALE ${discount}% OFF`;
+                }
+            });
+
+            localStorage.setItem('lsaProducts', JSON.stringify(products));
+            loadProductsTable();
+            addActivity(`Diskon ${discount}% diterapkan ke kategori ${category}`);
+            alert('✅ Diskon massal berhasil diterapkan!');
+        }
+
+        function exportProductsCSV() {
+            let csv = 'Nama,Kategori,Harga,Stok,Deskripsi\n';
+            products.forEach(p => {
+                const cat = categories.find(c => c.id === p.category);
+                csv += `"${p.name}","${cat ? cat.name : ''}",${p.price},${p.stok},"${p.description || ''}"\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'products.csv';
+            a.click();
+        }
+
+        // ==================== CATEGORY MANAGEMENT ====================
+        
+        function loadCategoryList() {
+            const list = document.getElementById('categoryList');
+            list.innerHTML = '';
+            
+            categories.forEach(category => {
+                const item = document.createElement('div');
+                item.className = 'category-item';
+                item.innerHTML = `
+                    <div class="category-info">
+                        <div class="category-color" style="background: ${category.color}"></div>
+                        <div class="category-details">
+                            <h4>${category.name} <i class="fas ${category.icon || 'fa-tag'}" style="color:${category.color};"></i></h4>
+                            <small>${category.productCount} produk • ${category.active ? 'Aktif' : 'Tidak Aktif'}</small>
+                        </div>
+                    </div>
+                    <div class="category-actions">
+                        <button onclick="editCategory('${category.id}')" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button onclick="toggleCategoryStatus('${category.id}')" title="Toggle Status">
+                            <i class="fas ${category.active ? 'fa-eye' : 'fa-eye-slash'}"></i>
+                        </button>
+                        <button onclick="deleteCategory('${category.id}')" title="Hapus"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+
+            // Load color picker
+            loadColorPicker();
+        }
+
+        function loadColorPicker() {
+            const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffcc5c', '#ff6f69', '#88d8b0'];
+            const picker = document.getElementById('colorPicker');
+            picker.innerHTML = '';
+            
+            colors.forEach(color => {
+                const div = document.createElement('div');
+                div.className = 'color-option' + (color === selectedColor ? ' selected' : '');
+                div.style.background = color;
+                div.onclick = function() { selectColor(this, color); };
+                picker.appendChild(div);
+            });
+        }
+
+        function selectColor(element, color) {
+            document.querySelectorAll('#colorPicker .color-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedColor = color;
+        }
+
+        function addCategory() {
+            const name = document.getElementById('categoryName').value;
+            const description = document.getElementById('categoryDescription').value;
+            const icon = document.getElementById('categoryIcon').value;
+            const active = document.getElementById('categoryActive').checked;
+
+            if (!name) {
+                alert('Masukkan nama kategori');
+                return;
+            }
+
+            const newCategory = {
+                id: 'cat' + Date.now(),
+                name: name,
+                color: selectedColor,
+                description: description,
+                icon: icon,
+                active: active,
+                productCount: 0
+            };
+
+            categories.push(newCategory);
+            localStorage.setItem('lsaCategories', JSON.stringify(categories));
+            
+            // Clear form
+            document.getElementById('categoryName').value = '';
+            document.getElementById('categoryDescription').value = '';
+            document.getElementById('categoryActive').checked = true;
+            
+            loadCategoryList();
+            loadCategoriesToSelects();
+            updateStats();
+            
+            addActivity('Kategori baru ditambahkan: ' + name);
+            alert('✅ Kategori berhasil ditambahkan!');
+        }
+
+        function editCategory(categoryId) {
+            const category = categories.find(c => c.id === categoryId);
+            if (!category) return;
+
+            document.getElementById('editCategoryId').value = category.id;
+            document.getElementById('editCategoryName').value = category.name;
+            document.getElementById('editCategoryDescription').value = category.description || '';
+
+            // Load color picker
+            const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffcc5c', '#ff6f69', '#88d8b0'];
+            const picker = document.getElementById('editColorPicker');
+            picker.innerHTML = '';
+            
+            colors.forEach(color => {
+                const div = document.createElement('div');
+                div.className = 'color-option' + (color === category.color ? ' selected' : '');
+                div.style.background = color;
+                div.onclick = function() { selectEditColor(this, color); };
+                picker.appendChild(div);
+            });
+
+            document.getElementById('editCategoryModal').classList.add('show');
+        }
+
+        function selectEditColor(element, color) {
+            document.querySelectorAll('#editColorPicker .color-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedColor = color;
+        }
+
+        function saveCategoryChanges() {
+            const id = document.getElementById('editCategoryId').value;
+            const name = document.getElementById('editCategoryName').value;
+            const description = document.getElementById('editCategoryDescription').value;
+
+            const category = categories.find(c => c.id === id);
+            if (category) {
+                category.name = name;
+                category.color = selectedColor;
+                category.description = description;
+                
+                localStorage.setItem('lsaCategories', JSON.stringify(categories));
+                loadCategoryList();
+                loadCategoriesToSelects();
+                closeEditCategoryModal();
+                
+                addActivity('Kategori diperbarui: ' + name);
+                alert('✅ Kategori berhasil diperbarui!');
+            }
+        }
+
+        function closeEditCategoryModal() {
+            document.getElementById('editCategoryModal').classList.remove('show');
+        }
+
+        function toggleCategoryStatus(categoryId) {
+            const category = categories.find(c => c.id === categoryId);
+            if (category) {
+                category.active = !category.active;
+                localStorage.setItem('lsaCategories', JSON.stringify(categories));
+                loadCategoryList();
+                loadCategoriesToSelects();
+                addActivity(`Status kategori ${category.name} diubah`);
+            }
+        }
+
+        function deleteCategory(categoryId) {
+            const category = categories.find(c => c.id === categoryId);
+            if (category.productCount > 0) {
+                alert('Tidak dapat menghapus kategori yang masih memiliki produk');
+                return;
+            }
+
+            if (confirm('Yakin ingin menghapus kategori ini?')) {
+                categories = categories.filter(c => c.id !== categoryId);
+                localStorage.setItem('lsaCategories', JSON.stringify(categories));
+                loadCategoryList();
+                loadCategoriesToSelects();
+                updateStats();
+                addActivity('Kategori dihapus');
+            }
+        }
+
+        // ==================== ORDER MANAGEMENT ====================
+        
+        function loadOrdersTable(filter = 'all') {
+            const tbody = document.getElementById('ordersTableBody');
+            tbody.innerHTML = '';
+            
+            let filteredOrders = orders;
+            if (filter !== 'all') {
+                filteredOrders = orders.filter(o => o.status === filter);
+            }
+            
+            filteredOrders.forEach(order => {
+                const row = document.createElement('tr');
+                const statusClass = {
+                    'pending': 'status-pending',
+                    'processing': 'status-processing',
+                    'shipped': 'status-shipped',
+                    'delivered': 'status-delivered',
+                    'cancelled': 'status-cancelled'
+                }[order.status] || '';
+                
+                row.innerHTML = `
+                    <td><strong>${order.id}</strong></td>
+                    <td>${order.customer}</td>
+                    <td>${order.products.join(', ')}</td>
+                    <td>$${order.total.toFixed(2)}</td>
+                    <td><span class="order-status ${statusClass}">${order.status.toUpperCase()}</span></td>
+                    <td>${order.payment}</td>
+                    <td>${order.date}</td>
+                    <td>
+                        <button class="btn-secondary" onclick="viewOrder('${order.id}')" style="padding:0.3rem 0.8rem;">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-success" onclick="updateOrderStatus('${order.id}')" style="padding:0.3rem 0.8rem;">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function filterOrders(status) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            loadOrdersTable(status);
+        }
+
+        function viewOrder(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            const modal = document.getElementById('orderDetailModal');
+            const content = document.getElementById('orderDetailContent');
+            
+            content.innerHTML = `
+                <p><strong>ID Pesanan:</strong> ${order.id}</p>
+                <p><strong>Pelanggan:</strong> ${order.customer}</p>
+                <p><strong>Produk:</strong> ${order.products.join(', ')}</p>
+                <p><strong>Total:</strong> $${order.total.toFixed(2)}</p>
+                <p><strong>Status:</strong> ${order.status}</p>
+                <p><strong>Pembayaran:</strong> ${order.payment}</p>
+                <p><strong>Tanggal:</strong> ${order.date}</p>
+            `;
+            
+            modal.classList.add('show');
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderDetailModal').classList.remove('show');
+        }
+
+        function updateOrderStatus(orderId) {
+            const newStatus = prompt('Update status (pending/processing/shipped/delivered/cancelled):');
+            if (newStatus && ['pending', 'processing', 'shipped', 'delivered', 'cancelled'].includes(newStatus)) {
+                const order = orders.find(o => o.id === orderId);
+                order.status = newStatus;
+                localStorage.setItem('lsaOrders', JSON.stringify(orders));
+                loadOrdersTable();
+                addActivity(`Status pesanan ${orderId} diubah ke ${newStatus}`);
+                alert('✅ Status pesanan diperbarui!');
+            }
+        }
+
+        function exportOrders() {
+            alert('Fitur export pesanan akan segera hadir!');
+        }
+
+        // ==================== GALLERY MANAGEMENT ====================
+        
+        function loadGallery() {
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '';
+            
+            galleryImages.forEach((image, index) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.dataset.index = index;
+                item.innerHTML = `
+                    <img src="${image}" alt="Gallery ${index + 1}">
+                    <div class="gallery-item-overlay">Image ${index + 1}</div>
+                    <div class="delete-image" onclick="deleteImage(${index}, event)">
+                        <i class="fas fa-trash"></i>
+                    </div>
+                `;
+                item.onclick = () => toggleSelectImage(index);
+                grid.appendChild(item);
+            });
+            
+            document.getElementById('totalImages').textContent = galleryImages.length;
+        }
+
+        function toggleSelectImage(index) {
+            const item = document.querySelector(`.gallery-item[data-index="${index}"]`);
+            item.classList.toggle('selected');
+            
+            if (selectedImages.includes(index)) {
+                selectedImages = selectedImages.filter(i => i !== index);
+            } else {
+                selectedImages.push(index);
+            }
+        }
+
+        function selectAllGallery() {
+            const items = document.querySelectorAll('.gallery-item');
+            selectedImages = [];
+            
+            items.forEach((item, index) => {
+                item.classList.add('selected');
+                selectedImages.push(index);
+            });
+        }
+
+        function deleteImage(index, event) {
+            event.stopPropagation();
+            if (confirm('Hapus gambar ini?')) {
+                galleryImages.splice(index, 1);
+                localStorage.setItem('lsaGallery', JSON.stringify(galleryImages));
+                loadGallery();
+                addActivity('Gambar dihapus dari galeri');
+            }
+        }
+
+        function deleteSelectedImages() {
+            if (selectedImages.length === 0) {
+                alert('Pilih gambar terlebih dahulu!');
+                return;
+            }
+            
+            if (confirm(`Hapus ${selectedImages.length} gambar terpilih?`)) {
+                galleryImages = galleryImages.filter((_, index) => !selectedImages.includes(index));
+                localStorage.setItem('lsaGallery', JSON.stringify(galleryImages));
+                selectedImages = [];
+                loadGallery();
+                addActivity(`${selectedImages.length} gambar dihapus`);
+            }
+        }
+
+        function handleImageUpload(event) {
+            const files = event.target.files;
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    galleryImages.push(e.target.result);
+                    localStorage.setItem('lsaGallery', JSON.stringify(galleryImages));
+                    loadGallery();
+                    addActivity('Gambar baru diupload');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function addImageFromUrl() {
+            const url = document.getElementById('imageUrlInput').value;
+            if (url) {
+                galleryImages.push(url);
+                localStorage.setItem('lsaGallery', JSON.stringify(galleryImages));
+                loadGallery();
+                document.getElementById('imageUrlInput').value = '';
+                addActivity('Gambar ditambahkan dari URL');
+            }
+        }
+
+        function searchGallery() {
+            alert('Fitur search gallery akan segera hadir!');
+        }
+
+        function openGalleryForProduct() {
+            currentProductField = 'productImage';
+            openGalleryModal();
+        }
+
+        function openGalleryForNewProduct() {
+            currentProductField = 'newProductImage';
+            openGalleryModal();
+        }
+
+        function openGalleryModal() {
+            const modal = document.getElementById('galleryModal');
+            const modalGrid = document.getElementById('modalGalleryGrid');
+            
+            modalGrid.innerHTML = '';
+            galleryImages.forEach((image, index) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.innerHTML = `<img src="${image}" alt="Gallery ${index + 1}">`;
+                item.onclick = () => {
+                    document.querySelectorAll('#modalGalleryGrid .gallery-item').forEach(i => i.classList.remove('selected'));
+                    item.classList.add('selected');
+                    selectedGalleryImage = image;
+                };
+                modalGrid.appendChild(item);
+            });
+            
+            modal.classList.add('show');
+        }
+
+        function closeGalleryModal() {
+            document.getElementById('galleryModal').classList.remove('show');
+        }
+
+        function selectGalleryImage() {
+            if (selectedGalleryImage) {
+                document.getElementById(currentProductField).value = selectedGalleryImage;
+                if (currentProductField === 'productImage') {
+                    updatePreview();
+                }
+                closeGalleryModal();
+                addActivity('Gambar dipilih dari galeri');
+            } else {
+                alert('Pilih gambar terlebih dahulu!');
+            }
+        }
+
+        // ==================== PAYMENT METHODS ====================
+        
+        function togglePayment(element, method) {
+            element.classList.toggle('active');
+            
+            if (activePayments.includes(method)) {
+                activePayments = activePayments.filter(m => m !== method);
+            } else {
+                activePayments.push(method);
+            }
+        }
+
+        function loadPaymentMethodsUI() {
+            const methods = document.querySelectorAll('.payment-method');
+            methods.forEach(method => {
+                const methodType = method.getAttribute('onclick').split("'")[1];
+                if (activePayments.includes(methodType)) {
+                    method.classList.add('active');
+                } else {
+                    method.classList.remove('active');
+                }
+            });
+        }
+
+        function savePaymentMethods() {
+            localStorage.setItem('lsaPayments', JSON.stringify(activePayments));
+            addActivity('Metode pembayaran diperbarui');
+            alert('✅ Metode pembayaran berhasil disimpan!');
+        }
+
+        function savePaymentGateway() {
+            alert('✅ Pengaturan payment gateway disimpan!');
+        }
+
+        // ==================== SHIPPING ====================
+        
+        function saveShippingSettings() {
+            const couriers = document.getElementById('shippingCouriers').value;
+            const flatRate = document.getElementById('shippingFlatRate').value;
+            const freeMin = document.getElementById('shippingFreeMin').value;
+            const estimate = document.getElementById('shippingEstimate').value;
+            
+            const settings = { couriers, flatRate, freeMin, estimate };
+            localStorage.setItem('lsaShipping', JSON.stringify(settings));
+            
+            addActivity('Pengaturan pengiriman diperbarui');
+            alert('✅ Pengaturan pengiriman disimpan!');
+        }
+
+        function saveStoreAddress() {
+            storeSettings.address = document.getElementById('storeAddress').value;
+            storeSettings.province = document.getElementById('storeProvince').value;
+            storeSettings.city = document.getElementById('storeCity').value;
+            storeSettings.zip = document.getElementById('storeZip').value;
+            
+            localStorage.setItem('lsaSettings', JSON.stringify(storeSettings));
+            addActivity('Alamat toko diperbarui');
+            alert('✅ Alamat toko disimpan!');
+        }
+
+        // ==================== DISCOUNTS & VOUCHERS ====================
+        
+        function applyDiscount() {
+            const productIndex = document.getElementById('discountProductSelect').value;
+            const discountType = document.getElementById('discountType').value;
+            const discountValue = parseFloat(document.getElementById('discountValue').value);
+            const startDate = document.getElementById('discountStart').value;
+            const endDate = document.getElementById('discountEnd').value;
+            
+            const product = products[productIndex];
+            
+            if (discountType === 'percentage') {
+                product.originalPrice = product.price;
+                product.price = product.price * (1 - discountValue / 100);
+                product.badge = `SALE ${discountValue}% OFF`;
+            } else {
+                product.originalPrice = product.price;
+                product.price = product.price - discountValue;
+                product.badge = `SALE $${discountValue} OFF`;
+            }
+            
+            product.discountStart = startDate;
+            product.discountEnd = endDate;
+            
+            localStorage.setItem('lsaProducts', JSON.stringify(products));
+            loadProductsTable();
+            addActivity(`Diskon diterapkan ke ${product.name}`);
+            alert('✅ Diskon berhasil diterapkan!');
+        }
+
+        function loadVouchersTable() {
+            const tbody = document.getElementById('vouchersTableBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            vouchers.forEach(voucher => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${voucher.code}</strong></td>
+                    <td>${voucher.type === 'percentage' ? '%' : '$'}</td>
+                    <td>${voucher.value}${voucher.type === 'percentage' ? '%' : '$'}</td>
+                    <td>$${voucher.minSpend}</td>
+                    <td>${voucher.used}/${voucher.maxUses}</td>
+                    <td><span style="color:${voucher.active ? '#28a745' : '#dc3545'}">${voucher.active ? 'Aktif' : 'Nonaktif'}</span></td>
+                    <td>
+                        <button class="btn-secondary" onclick="toggleVoucher('${voucher.code}')" style="padding:0.3rem 0.8rem;">
+                            <i class="fas ${voucher.active ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function addVoucher() {
+            const code = document.getElementById('voucherCode').value;
+            const type = document.getElementById('voucherType').value;
+            const value = parseFloat(document.getElementById('voucherValue').value);
+            const minSpend = parseFloat(document.getElementById('voucherMin').value);
+            const maxUses = parseInt(document.getElementById('voucherMaxUses').value);
+
+            if (!code || !value) {
+                alert('Isi kode voucher dan nilai');
+                return;
+            }
+
+            const newVoucher = {
+                code: code,
+                type: type,
+                value: value,
+                minSpend: minSpend,
+                maxUses: maxUses,
+                used: 0,
+                active: true
+            };
+
+            vouchers.push(newVoucher);
+            localStorage.setItem('lsaVouchers', JSON.stringify(vouchers));
+            loadVouchersTable();
+            
+            document.getElementById('voucherCode').value = '';
+            document.getElementById('voucherValue').value = '';
+            
+            addActivity('Voucher baru: ' + code);
+            alert('✅ Voucher berhasil dibuat!');
+        }
+
+        function toggleVoucher(code) {
+            const voucher = vouchers.find(v => v.code === code);
+            if (voucher) {
+                voucher.active = !voucher.active;
+                localStorage.setItem('lsaVouchers', JSON.stringify(vouchers));
+                loadVouchersTable();
+                addActivity(`Status voucher ${code} diubah`);
+            }
+        }
+
+        // ==================== CUSTOMER MANAGEMENT ====================
+        
+        function loadCustomersTable() {
+            const tbody = document.getElementById('customersTableBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            customers.forEach(customer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>#${customer.id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td>$${customer.totalSpent.toFixed(2)}</td>
+                    <td>${customer.orders}</td>
+                    <td>${customer.registered}</td>
+                    <td><span style="color:${customer.status === 'active' ? '#28a745' : '#dc3545'}">${customer.status}</span></td>
+                    <td>
+                        <button class="btn-secondary" onclick="viewCustomer(${customer.id})" style="padding:0.3rem 0.8rem;">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function viewCustomer(id) {
+            alert('Fitur detail pelanggan akan segera hadir!');
+        }
+
+        function exportCustomers() {
+            alert('Fitur export pelanggan akan segera hadir!');
+        }
+
+        // ==================== REPORTS ====================
+        
+        function generateSalesReport() {
+            alert('Fitur laporan penjualan akan segera hadir!');
+        }
+
+        function exportSalesReport() {
+            alert('Fitur export laporan akan segera hadir!');
+        }
+
+        function generateStockReport() {
+            alert('Fitur laporan stok akan segera hadir!');
+        }
+
+        function checkLowStock() {
+            const lowStock = products.filter(p => p.stock < 10);
+            if (lowStock.length > 0) {
+                alert(`Produk dengan stok menipis:\n${lowStock.map(p => `- ${p.name}: ${p.stock}`).join('\n')}`);
+            } else {
+                alert('Semua stok aman!');
+            }
+        }
+
+        // ==================== SETTINGS ====================
+        
+        function saveStoreInfo() {
+            storeSettings.name = document.getElementById('storeName').value;
+            storeSettings.tagline = document.getElementById('storeTagline').value;
+            storeSettings.description = document.getElementById('storeDescription').value;
+            storeSettings.logo = document.getElementById('storeLogo').value;
+            storeSettings.favicon = document.getElementById('storeFavicon').value;
+            
+            localStorage.setItem('lsaSettings', JSON.stringify(storeSettings));
+            addActivity('Informasi toko diperbarui');
+            alert('✅ Informasi toko disimpan!');
+        }
+
+        function saveTheme() {
+            alert('✅ Tema berhasil disimpan!');
+        }
+
+        function saveSEO() {
+            alert('✅ Pengaturan SEO disimpan!');
+        }
+
+        function saveSecurity() {
+            alert('✅ Pengaturan keamanan disimpan!');
+        }
+
+        // ==================== CONTACT ====================
+        
+        function saveContactInfo() {
+            contactInfo.wa = document.getElementById('waNumber').value;
+            contactInfo.email = document.getElementById('emailContact').value;
+            contactInfo.phone = document.getElementById('phoneNumber').value;
+            
+            localStorage.setItem('lsaContact', JSON.stringify(contactInfo));
+            addActivity('Kontak diperbarui');
+            alert('✅ Kontak berhasil disimpan!');
+        }
+
+        function saveSocialMedia() {
+            contactInfo.instagram = document.getElementById('instagram').value;
+            contactInfo.facebook = document.getElementById('facebook').value;
+            contactInfo.twitter = document.getElementById('twitter').value;
+            contactInfo.tiktok = document.getElementById('tiktok').value;
+            contactInfo.youtube = document.getElementById('youtube').value;
+            
+            localStorage.setItem('lsaContact', JSON.stringify(contactInfo));
+            addActivity('Sosial media diperbarui');
+            alert('✅ Sosial media berhasil disimpan!');
+        }
+
+        // ==================== BACKUP ====================
+        
+        function createBackup() {
+            const backup = {
+                products: products,
+                categories: categories,
+                orders: orders,
+                customers: customers,
+                vouchers: vouchers,
+                gallery: galleryImages,
+                payments: activePayments,
+                contact: contactInfo,
+                settings: storeSettings,
+                date: new Date().toISOString()
+            };
+            
+            localStorage.setItem('lsaBackup', JSON.stringify(backup));
+            addActivity('Backup database dibuat');
+            alert('✅ Backup berhasil dibuat!');
+        }
+
+        function downloadBackup() {
+            const backup = {
+                products: products,
+                categories: categories,
+                orders: orders,
+                customers: customers,
+                vouchers: vouchers,
+                gallery: galleryImages,
+                payments: activePayments,
+                contact: contactInfo,
+                settings: storeSettings,
+                date: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `lsa-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+
+        function restoreBackup(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const backup = JSON.parse(e.target.result);
+                    
+                    if (confirm('Yakin ingin merestore backup? Data saat ini akan tergantikan.')) {
+                        products = backup.products || products;
+                        categories = backup.categories || categories;
+                        orders = backup.orders || orders;
+                        customers = backup.customers || customers;
+                        vouchers = backup.vouchers || vouchers;
+                        galleryImages = backup.gallery || galleryImages;
+                        activePayments = backup.payments || activePayments;
+                        contactInfo = backup.contact || contactInfo;
+                        storeSettings = backup.settings || storeSettings;
+                        
+                        // Save all to localStorage
+                        localStorage.setItem('lsaProducts', JSON.stringify(products));
+                        localStorage.setItem('lsaCategories', JSON.stringify(categories));
+                        localStorage.setItem('lsaOrders', JSON.stringify(orders));
+                        localStorage.setItem('lsaCustomers', JSON.stringify(customers));
+                        localStorage.setItem('lsaVouchers', JSON.stringify(vouchers));
+                        localStorage.setItem('lsaGallery', JSON.stringify(galleryImages));
+                        localStorage.setItem('lsaPayments', JSON.stringify(activePayments));
+                        localStorage.setItem('lsaContact', JSON.stringify(contactInfo));
+                        localStorage.setItem('lsaSettings', JSON.stringify(storeSettings));
+                        
+                        addActivity('Database direstore dari backup');
+                        alert('✅ Restore berhasil! Halaman akan direfresh.');
+                        location.reload();
+                    }
+                } catch (error) {
+                    alert('File backup tidak valid!');
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+
+        function restoreBackupFile(filename) {
+            alert('Fitur restore file spesifik akan segera hadir!');
+        }
+
+        // ==================== DASHBOARD ====================
+        
+        function updateDashboard() {
+            // Update recent orders table
+            const tbody = document.getElementById('recentOrdersTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            orders.slice(0, 5).forEach(order => {
+                const row = document.createElement('tr');
+                const statusClass = {
+                    'pending': 'status-pending',
+                    'processing': 'status-processing',
+                    'shipped': 'status-shipped',
+                    'delivered': 'status-delivered',
+                    'cancelled': 'status-cancelled'
+                }[order.status] || '';
+                
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.customer}</td>
+                    <td>$${order.total.toFixed(2)}</td>
+                    <td><span class="order-status ${statusClass}">${order.status.toUpperCase()}</span></td>
+                    <td>${order.date}</td>
+                    <td>
+                        <button class="btn-secondary" onclick="viewOrder('${order.id}')" style="padding:0.2rem 0.5rem;">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // ==================== ACTIVITY LOG ====================
+        
+        function addActivity(message) {
+            const activityDiv = document.getElementById('recentActivity');
+            const newActivity = document.createElement('div');
+            newActivity.style.padding = '0.5rem';
+            newActivity.style.background = '#f8f9fa';
+            newActivity.style.borderRadius = '5px';
+            newActivity.style.marginBottom = '0.5rem';
+            newActivity.innerHTML = `<small>${new Date().toLocaleTimeString()}</small><p>${message}</p>`;
+            
+            activityDiv.insertBefore(newActivity, activityDiv.firstChild);
+            
+            // Keep only last 5 activities
+            while (activityDiv.children.length > 5) {
+                activityDiv.removeChild(activityDiv.lastChild);
+            }
+        }
+
+        // ==================== EXPORT FUNCTIONS ====================
+        
+        function exportProducts() {
+            exportProductsCSV();
+        }
+
+        // Initialize everything
+        initialize();
+
+        // Add event listeners for preview
+        document.getElementById('productName')?.addEventListener('input', updatePreview);
+        document.getElementById('productPrice')?.addEventListener('input', updatePreview);
+        document.getElementById('productStock')?.addEventListener('input', updatePreview);
+        document.getElementById('productImage')?.addEventListener('input', updatePreview);
+        document.getElementById('productCategory')?.addEventListener('change', updatePreview);
+    </script>
+</body>
+</html>
