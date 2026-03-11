@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L.S.A Crocs - Premium Lifestyle Crocs</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            padding: 1rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .logo span {
+            font-size: 1rem;
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-left: 5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-icons i {
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-icons i:hover {
+            color: #ffd700;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1460353581641-37baddab0fa2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 6rem 5%;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            color: #1a1a1a;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hero .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255,215,0,0.3);
+        }
+
+        /* Products Section */
+        .products-section {
+            padding: 4rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px rgba(0,0,0,0.1);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+            color: #1a1a1a;
+            padding: 0.3rem 1rem;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price .original-price {
+            font-size: 0.9rem;
+            color: #999;
+            text-decoration: line-through;
+            margin-left: 0.5rem;
+        }
+
+        .product-stock {
+            font-size: 0.9rem;
+            color: #4caf50;
+            margin-bottom: 1rem;
+        }
+
+        .product-stock.low-stock {
+            color: #ff9800;
+        }
+
+        .product-stock.out-stock {
+            color: #f44336;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 0.8rem;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            background: #ffd700;
+            color: #1a1a1a;
+        }
+
+        /* Payment Methods Display */
+        .payment-section {
+            padding: 3rem 5%;
+            background: white;
+            margin-top: 2rem;
+        }
+
+        .payment-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .payment-methods-display {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .payment-method-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: #f8f9fa;
+            border-radius: 50px;
+            font-weight: 500;
+        }
+
+        .payment-method-display i {
+            color: #ffd700;
+            font-size: 1.2rem;
+        }
+
+        /* Contact Bar */
+        .contact-bar {
+            background: #1a1a1a;
+            color: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .contact-item i {
+            color: #ffd700;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 5%;
+            border-top: 1px solid #333;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section p {
+            opacity: 0.8;
+            line-height: 1.8;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #ffd700;
+            transform: translateY(-2px);
+        }
+
+        /* Admin Login Link (sembunyi) */
+        .admin-login {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .admin-login:hover {
+            opacity: 1;
+            background: #1a1a1a;
+        }
+
+        .admin-login a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .contact-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="#" class="logo">L.S.A <span>Crocs</span></a>
+            <nav class="nav-menu">
+                <a href="#">Home</a>
+                <a href="#">Products</a>
+                <a href="#">Collections</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </nav>
+            <div class="nav-icons">
+                <i class="fas fa-search"></i>
+                <i class="fas fa-user"></i>
+                <i class="fas fa-shopping-bag"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Step Into Style With L.S.A Crocs</h1>
+        <p>Discover our premium collection of designer Crocs for the modern lifestyle</p>
+        <a href="#" class="cta-button">Shop Now</a>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section">
+        <h2 class="section-title">Featured Collection</h2>
+        <div class="products-grid" id="productsGrid">
+            <!-- Products will be dynamically loaded here -->
+        </div>
+    </section>
+
+    <!-- Payment Methods Section -->
+    <section class="payment-section">
+        <div class="payment-container">
+            <h2 class="section-title">Payment Methods</h2>
+            <div class="payment-methods-display" id="paymentMethodsDisplay">
+                <!-- Payment methods will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Bar -->
+    <div class="contact-bar" id="contactBar">
+        <!-- Contact info will be loaded here -->
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>L.S.A Crocs</h3>
+                <p>Premium lifestyle Crocs for the modern individual. Quality comfort meets elegant design.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <p>About Us</p>
+                <p>Contact</p>
+                <p>FAQs</p>
+                <p>Shipping Info</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-phone"></i> <span id="footerPhone">+62 812-3456-7890</span></p>
+                <p><i class="fas fa-envelope"></i> <span id="footerEmail">info@lsacrocs.com</span></p>
+                <p><i class="fas fa-map-marker-alt"></i> Jakarta, Indonesia</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Hidden Admin Login Link -->
+    <div class="admin-login">
+        <a href="admin.html" target="_blank"><i class="fas fa-lock"></i></a>
+    </div>
+
+    <script>
+        // Load data from localStorage or use default
+        let products = JSON.parse(localStorage.getItem('lsaProducts')) || [
+            {
+                id: 0,
+                name: "Classic Crocs",
+                price: 49.99,
+                originalPrice: 79.99,
+                stock: 50,
+                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                badge: "SALE"
+            },
+            {
+                id: 1,
+                name: "Sport Mode",
+                price: 69.99,
+                originalPrice: 89.99,
+                stock: 35,
+                image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                badge: "NEW"
+            },
+            {
+                id: 2,
+                name: "Lux Edition",
+                price: 129.99,
+                originalPrice: 199.99,
+                stock: 15,
+                image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                badge: "PREMIUM"
+            }
+        ];
+
+        let activePayments = JSON.parse(localStorage.getItem('lsaPayments')) || ['credit', 'bank', 'ewallet', 'cod'];
+        
+        let contactInfo = JSON.parse(localStorage.getItem('lsaContact')) || {
+            wa: "+62 812-3456-7890",
+            email: "admin@lsacrocs.com",
+            instagram: "@lsa.crocs",
+            facebook: "LSA Crocs"
+        };
+
+        // Payment method icons and labels
+        const paymentMethods = {
+            credit: { icon: 'fa-credit-card', label: 'Credit Card' },
+            bank: { icon: 'fa-university', label: 'Bank Transfer' },
+            ewallet: { icon: 'fa-mobile-alt', label: 'E-Wallet' },
+            cod: { icon: 'fa-truck', label: 'Cash on Delivery' }
+        };
+
+        // Load Products
+        function loadProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            
+            products.forEach(product => {
+                const stockClass = product.stock > 20 ? '' : (product.stock > 0 ? 'low-stock' : 'out-stock');
+                const stockText = product.stock > 0 ? `Stock: ${product.stock}` : 'Out of Stock';
+                
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-badge">${product.badge || 'SALE'}</div>
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">${product.name}</h3>
+                        <div class="product-price">
+                            $${product.price.toFixed(2)}
+                            ${product.originalPrice ? `<span class="original-price">$${product.originalPrice.toFixed(2)}</span>` : ''}
+                        </div>
+                        <div class="product-stock ${stockClass}">${stockText}</div>
+                        <button class="add-to-cart" ${product.stock === 0 ? 'disabled' : ''}>
+                            ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Load Payment Methods
+        function loadPaymentMethods() {
+            const display = document.getElementById('paymentMethodsDisplay');
+            display.innerHTML = '';
+            
+            activePayments.forEach(method => {
+                if (paymentMethods[method]) {
+                    const methodDiv = document.createElement('div');
+                    methodDiv.className = 'payment-method-display';
+                    methodDiv.innerHTML = `
+                        <i class="fas ${paymentMethods[method].icon}"></i>
+                        <span>${paymentMethods[method].label}</span>
+                    `;
+                    display.appendChild(methodDiv);
+                }
+            });
+        }
+
+        // Load Contact Info
+        function loadContactInfo() {
+            const contactBar = document.getElementById('contactBar');
+            contactBar.innerHTML = `
+                <div class="contact-item">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>${contactInfo.wa}</span>
+                </div>
+                <div class="contact-item">
+                    <i class="far fa-envelope"></i>
+                    <span>${contactInfo.email}</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fab fa-instagram"></i>
+                    <span>${contactInfo.instagram}</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fab fa-facebook"></i>
+                    <span>${contactInfo.facebook}</span>
+                </div>
+            `;
+
+            document.getElementById('footerPhone').textContent = contactInfo.wa;
+            document.getElementById('footerEmail').textContent = contactInfo.email;
+        }
+
+        // Check for updates every 3 seconds
+        function checkForUpdates() {
+            setInterval(() => {
+                const updatedProducts = JSON.parse(localStorage.getItem('lsaProducts'));
+                const updatedPayments = JSON.parse(localStorage.getItem('lsaPayments'));
+                const updatedContact = JSON.parse(localStorage.getItem('lsaContact'));
+
+                if (updatedProducts && JSON.stringify(updatedProducts) !== JSON.stringify(products)) {
+                    products = updatedProducts;
+                    loadProducts();
+                }
+
+                if (updatedPayments && JSON.stringify(updatedPayments) !== JSON.stringify(activePayments)) {
+                    activePayments = updatedPayments;
+                    loadPaymentMethods();
+                }
+
+                if (updatedContact && JSON.stringify(updatedContact) !== JSON.stringify(contactInfo)) {
+                    contactInfo = updatedContact;
+                    loadContactInfo();
+                }
+            }, 3000);
+        }
+
+        // Initialize
+        loadProducts();
+        loadPaymentMethods();
+        loadContactInfo();
+        checkForUpdates();
+    </script>
+</body>
+</html>
